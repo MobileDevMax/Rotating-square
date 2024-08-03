@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+   import 'dart:math';
+
+   void main() {
+     runApp(MyApp());
+   }
+
+   class MyApp extends StatelessWidget {
+     @override
+     Widget build(BuildContext context) {
+       return MaterialApp(
+         title: 'Rotating square',
+         home: RotatingSquare(),
+       );
+     }
+   }
+
+   class RotatingSquare extends StatefulWidget {
+     @override
+     _RotatingSquareState createState() => _RotatingSquareState();
+   }
+
+   class _RotatingSquareState extends State<RotatingSquare>
+       with SingleTickerProviderStateMixin {
+     late AnimationController _controller;
+     late Animation<double> _animation;
+
+     @override
+     void initState() {
+       super.initState();
+       _controller = AnimationController(
+         duration: const Duration(seconds: 2),
+         vsync: this,
+       )..repeat(); // Infinitely repeating animation
+
+       _animation = Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
+     }
+
+     @override
+     void dispose() {
+       _controller.dispose();
+       super.dispose();
+     }
+
+     @override
+     Widget build(BuildContext context) {
+       return Scaffold(
+         appBar: AppBar(
+           title: Text('Rotating square'),
+         ),
+         body: Center(
+           child: AnimatedBuilder(
+             animation: _animation,
+             builder: (context, child) {
+               return Transform.rotate(
+                 angle: _animation.value,
+                 child: Container(
+                   width: 100,
+                   height: 100,
+                   color: Colors.blue,
+                 ),
+               );
+             },
+           ),
+         ),
+       );
+     }
+   }
